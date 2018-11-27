@@ -1,32 +1,38 @@
 package org.anil.hellokotlin.resources
 
 import org.anil.hellokotlin.model.Bank
-import org.anil.hellokotlin.resources.BankResource.Companion.BANKS_URI
+import org.anil.hellokotlin.model.CreateBankRequest
 import org.anil.hellokotlin.service.BankService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo
+import org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import java.net.URI
+import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
-@Controller
-@RequestMapping(BANKS_URI)
+@RestController
+@RequestMapping("/banks")
 class BankResource(
         @Autowired
         val service: BankService
 ) {
 
-    companion object {
-        const val BANKS_URI = "/banks"
+    @PostMapping
+    fun create(@Valid @RequestBody request: CreateBankRequest): ResponseEntity<Bank> {
+        var bank = service.create(request)
+        var link = linkTo(methodOn(BankResource::class.java).get(bank.id!!)).toUri()
+        return ResponseEntity.created(link).build()
     }
 
+    @GetMapping("/{id}")
+    fun get(@PathVariable id: Int): ResponseEntity<Bank> {
+        var bank = service.get(id)
 
-    @PostMapping
-    fun create(name: String): ResponseEntity<Bank> {
-        var bank = service.create(name)
-        // TODO build link with spring hateoas
-        return ResponseEntity.created(URI.create(BANKS_URI + "/" + bank.id)).build()
+        return if (bank.isPresent) {
+            ResponseEntity.ok(bank.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
 }
