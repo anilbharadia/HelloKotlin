@@ -6,8 +6,8 @@ import org.anil.hellokotlin.model.CreateBankRequest
 import org.anil.hellokotlin.repository.BankRepository
 import org.hamcrest.Matchers.containsString
 import org.hamcrest.Matchers.equalTo
-import org.junit.Before
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -29,7 +29,7 @@ internal class BankResourceIntegrationTest {
     @Autowired
     lateinit var repository: BankRepository
 
-    @Before
+    @BeforeEach
     fun cleanupDatabase() {
         repository.deleteAll()
     }
