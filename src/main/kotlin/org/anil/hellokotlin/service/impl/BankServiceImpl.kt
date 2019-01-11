@@ -14,11 +14,9 @@ class BankServiceImpl(
         val repository: BankRepository
 ) : BankService {
 
-    override fun get(id: Int): Optional<Bank> {
-        return repository.findById(id)
-    }
+    override fun findAll(): List<Bank> = repository.findAll()
 
-    override fun create(request: CreateBankRequest): Bank {
-        return repository.saveAndFlush(Bank(request.name))
-    }
+    override fun findById(id: Int): Optional<Bank> = repository.findById(id)
+
+    override fun create(request: CreateBankRequest): Bank = repository.saveAndFlush(Bank(request.name))
 }

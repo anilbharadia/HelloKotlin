@@ -26,13 +26,18 @@ class BankResource(
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int): ResponseEntity<Bank> {
-        var bank = service.get(id)
+        var bank = service.findById(id)
 
         return if (bank.isPresent) {
             ResponseEntity.ok(bank.get())
         } else {
             ResponseEntity.notFound().build()
         }
+    }
+
+    @GetMapping
+    fun getAll(): ResponseEntity<List<Bank>> {
+        return ResponseEntity.ok(service.findAll())
     }
 
 }

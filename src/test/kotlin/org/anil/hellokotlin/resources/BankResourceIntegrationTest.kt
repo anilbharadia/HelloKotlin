@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.anil.hellokotlin.model.Bank
 import org.anil.hellokotlin.model.CreateBankRequest
 import org.anil.hellokotlin.repository.BankRepository
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -73,5 +72,17 @@ internal class BankResourceIntegrationTest {
     fun get_bank_details__by_invalid_ID() {
         mockMvc.perform(get("/banks/" + Integer.MAX_VALUE))
                 .andExpect(status().isNotFound)
+    }
+
+    @Test
+    fun get_all_banks() {
+        repository.saveAndFlush(Bank("SBI"))
+        repository.saveAndFlush(Bank("HDFC"))
+        repository.saveAndFlush(Bank("ICICI"))
+
+        mockMvc.perform(get("/banks"))
+                .andExpect(status().isOk)
+                .andExpect(jsonPath("$", hasSize<Any>(3)))
+                .andExpect(jsonPath("$[0].name", `is`("SBI")))
     }
 }

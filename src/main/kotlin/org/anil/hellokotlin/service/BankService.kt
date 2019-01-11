@@ -6,8 +6,10 @@ import java.util.*
 
 interface BankService {
 
-    fun create(name: CreateBankRequest): Bank
+    fun create(request: CreateBankRequest): Bank
 
-    fun get(id: Int): Optional<Bank>
+    fun findById(id: Int): Optional<Bank>
+
+    fun findAll(): List<Bank>
 
 }
